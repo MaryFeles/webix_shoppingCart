@@ -76,13 +76,19 @@ function addToBascket(){
 function removeFromBascket(){
 	let selected_id = $$('bascketTable').getItem($$('bascketTable').getSelectedId(true)).id;
 	if( $$('bascketTable').getSelectedItem().quantity == 1 ){
+		$$('storageTable').getItem(selected_id).quantity++;
+		$$('storageTable').refresh();
 		$$('bascketTable').remove(selected_id);
+
+
 	} else {
+		$$('storageTable').getItem(selected_id).quantity++;
+		$$('storageTable').refresh();
+
 		$$('bascketTable').getSelectedItem().quantity--;
 		$$('bascketTable').refresh();
 
-		$$('storageTable').getItem(selected_id).quantity++;
-		$$('storageTable').refresh();
+		
 	}
 	
 }
