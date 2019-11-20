@@ -22,11 +22,8 @@ let storageTable = {
 		{id:"price", header:"Стоимость, шт", width:150, sort:"int"},
 	],        
 	on:{
-        // the default click behavior that is true for any datatable cell
         "onItemClick": function(id, e, trg) {
-        	console.log($$('storageTable').getSelectedItem());
-        	$$('bascketTable').add($$('storageTable').getSelectedItem());
-        	webix.message("Click on row: " + id.row+", column: " + id.column)
+        	addToBascket();
         }
     },
 };
@@ -34,21 +31,63 @@ let storageTable = {
 let bascketTable = {
     view: "datatable",
     id: "bascketTable",
+    select: true,
     columns:[
         {id:"id", header:"№", width:40, sort:"int"},
         {id:"name", header:"Наименование", width: 200, sort:"string"},
         {id:"quantity", header:"Кол-во", width:150, sort:"int"},
         {id:"price", header:"Стоимость", width:150, sort:"int"}
     ],
+    on:{
+        "onItemClick": function(id, e, trg) {
+        	//webix.message("Click on row: " + id.row+", column: " + id.column)
+        	removeFromBascket();
+        }
+    },
 };
 
 
+function addToBascket(){
+	productQuantity = $$('storageTable').getSelectedItem().quantity;
+	if (productQuantity == 0){
+		alert('Failed');
+	} else {		
+		$$('storageTable').getSelectedItem().quantity--;
+		$$('storageTable').refresh();
 
-var small_film_set = [
-	{ id:1, title:"The Shawshank Redemption", year:1994, votes:678790, rating:9.2, rank:1, category:"Thriller"},
-	{ id:2, title:"The Godfather", year:1972, votes:511495, rating:9.2, rank:2, category:"Crime"},
-	{ id:3, title:"The Godfather: Part II", year:1974, votes:319352, rating:9.0, rank:3, category:"Crime"}
-];
+		let selected_id = $$("storageTable").getItem($$("storageTable").getSelectedId(true)).id;
+		let copyRow = webix.copy( $$('storageTable').getSelectedItem());
+
+		if($$('bascketTable').exists(selected_id)){
+			console.log("exists");
+
+			$$('bascketTable').getItem(selected_id).quantity++;
+			$$('bascketTable').refresh();
+		} else{
+			$$('bascketTable').add(copyRow);
+			$$('bascketTable').getItem(selected_id).quantity = 1;
+			$$('bascketTable').refresh();
+		}    
+	}
+}
+
+
+
+function removeFromBascket(){
+	let selected_id = $$('bascketTable').getItem($$('bascketTable').getSelectedId(true)).id;
+	if( $$('bascketTable').getSelectedItem().quantity == 1 ){
+		$$('bascketTable').remove(selected_id);
+	} else {
+		$$('bascketTable').getSelectedItem().quantity--;
+		$$('bascketTable').refresh();
+
+		$$('storageTable').getItem(selected_id).quantity++;
+		$$('storageTable').refresh();
+	}
+	
+}
+
+
 
 let storage=[
 	{id: 1, name: "CPU", quantity: 3, price: 5000},
