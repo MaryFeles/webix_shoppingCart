@@ -46,7 +46,6 @@ let bascketTable = {
     },
 };
 
-
 function addToBascket(){
 	productQuantity = $$('storageTable').getSelectedItem().quantity;
 	if (productQuantity == 0){
@@ -62,6 +61,7 @@ function addToBascket(){
 			console.log("exists");
 
 			$$('bascketTable').getItem(selected_id).quantity++;
+			$$('bascketTable').getItem(selected_id).price+=$$('storageTable').getItem(selected_id).price;
 			$$('bascketTable').refresh();
 		} else{
 			$$('bascketTable').add(copyRow);
@@ -70,8 +70,6 @@ function addToBascket(){
 		}    
 	}
 }
-
-
 
 function removeFromBascket(){
 	let selected_id = $$('bascketTable').getItem($$('bascketTable').getSelectedId(true)).id;
@@ -86,13 +84,11 @@ function removeFromBascket(){
 		$$('storageTable').refresh();
 
 		$$('bascketTable').getSelectedItem().quantity--;
-		$$('bascketTable').refresh();
-
-		
+		$$('bascketTable').getItem(selected_id).price-=$$('storageTable').getItem(selected_id).price;
+		$$('bascketTable').refresh();		
 	}
 	
 }
-
 
 
 let storage=[
